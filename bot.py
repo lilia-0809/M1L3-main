@@ -16,6 +16,16 @@ def start(message):
 - Голосовые сообщения автоматически банят отправителя (кроме администраторов)"""
     bot.reply_to(message, help_text)
 
+@bot.chat_member_handler()
+def greet_new_member(chat_member):
+    if chat_member.new_chat_member.status == 'member' and chat_member.old_chat_member.status in ['left', 'kicked']:
+        user = chat_member.new_chat_member.user
+        username = user.username
+        if username:
+            bot.send_message(chat_member.chat.id, f"Добро пожаловать, @{username}!")
+        else:
+            bot.send_message(chat_member.chat.id, f"Добро пожаловать, {user.first_name}!")
+
 @bot.message_handler(commands=['ban'])
 def ban_user(message):
     if message.reply_to_message: #проверка на то, что эта команда была вызвана в ответ на сообщение
